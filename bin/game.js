@@ -59,7 +59,6 @@ var __values = (this && this.__values) || function (o) {
 };
 define("game", ["require", "exports", "@decentraland/SoundController"], function (require, exports, SoundController_1) {
     "use strict";
-    var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     // Define song list
     var songs = [
@@ -151,14 +150,7 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
         buttonArray[i].set(new CylinderShape());
         buttonArray[i].set(new ButtonState(0, 0.1));
         buttonArray[i].set(new OnClick(function (_) {
-            var state = buttonArray[i].get(ButtonState);
-            state.pressed = !state.pressed;
-            playSong(i);
-            for (var j = 0; j < songs.length; j++) {
-                if (j !== i) {
-                    buttonArray[j].get(ButtonState).pressed = false;
-                }
-            }
+            pressButton(i);
         }));
         engine.addEntity(buttonArray[i]);
         // const label = new Entity()
@@ -197,25 +189,24 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
             });
         }); });
     }
-    executeTask(function () { return __awaiter(_this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _b.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, SoundController_1.playSound("a.mp3", {
-                            loop: false,
-                            volume: 100,
-                        })];
-                case 1:
-                    _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = _b.sent();
-                    log('failed to play sound');
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+    function pressButton(i) {
+        var state = buttonArray[i].get(ButtonState);
+        state.pressed = !state.pressed;
+        playSong(i);
+        for (var j = 0; j < songs.length; j++) {
+            if (j !== i) {
+                buttonArray[j].get(ButtonState).pressed = false;
             }
-        });
-    }); });
+        }
+    }
 });
+// executeTask(async () => {
+//   try {
+//     await playSound("a.mp3", {
+//       loop: false,
+//       volume: 100,
+//     })
+//   } catch {
+//     log('failed to play sound')
+//   }
+// })

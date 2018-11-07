@@ -87,14 +87,7 @@ for (let i = 0; i < songs.length; i ++){
   buttonArray[i].set(new CylinderShape())
   buttonArray[i].set(new ButtonState(0, 0.1))
   buttonArray[i].set(new OnClick( _ => {
-    let state = buttonArray[i].get(ButtonState)
-    state.pressed = !state.pressed
-    playSong(i)
-    for (let j = 0; j < songs.length; j ++){
-      if (j !== i){
-        buttonArray[j].get(ButtonState).pressed = false
-      }
-    }
+    pressButton(i)
   }))
 
   engine.addEntity(buttonArray[i])
@@ -124,13 +117,24 @@ function playSong(index: number){
   })
 }
 
-executeTask(async () => {
-  try {
-    await playSound("a.mp3", {
-      loop: false,
-      volume: 100,
-    })
-  } catch {
-    log('failed to play sound')
-  }
-})
+function pressButton(i:number){
+  let state = buttonArray[i].get(ButtonState)
+    state.pressed = !state.pressed
+    playSong(i)
+    for (let j = 0; j < songs.length; j ++){
+      if (j !== i){
+        buttonArray[j].get(ButtonState).pressed = false
+      }
+    }
+}
+
+// executeTask(async () => {
+//   try {
+//     await playSound("a.mp3", {
+//       loop: false,
+//       volume: 100,
+//     })
+//   } catch {
+//     log('failed to play sound')
+//   }
+// })
