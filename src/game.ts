@@ -1,51 +1,136 @@
-/// --- Set up a system ---
+import { playSound } from '@decentraland/SoundController'
 
-class RotatorSystem extends System {
-  // this group will contain every entity that has a Transform component
-  group = engine.getComponentGroup(Transform)
+// Define song list
+const songs: {src: string, name: string}[] = 
+[
+  {src: "sounds/Concerto a' 4 Violini No 2 - Telemann.mp3", name: "Telemann"},
+  {src: "sounds/Double Violin Concerto 1st Movement - J.S. Bach.mp3", name: "Bach"},
+  {src: "sounds/Rhapsody No. 2 in G Minor – Brahms.mp3", name: "Brahms"},
+  {src: "sounds/Scherzo No1_ Chopin.mp3", name: "Chopin"},
+];
 
+
+////////////////////////
+// Custom components
+
+@Component('buttonState')
+export class ButtonState {
+  pressed: boolean = false
+  zUp: number = 0
+  zDown: number = 0
+  fraction: number = 0
+  constructor(zUp: number, zDown: number){
+    this.zUp = zUp
+    this.zDown = zDown
+  }
+}
+
+///////////////////////////
+// Entity groups
+
+const buttons = engine.getComponentGroup(Transform, ButtonState)
+
+///////////////////////////
+// Systems
+
+export class PushButton {
   update(dt: number) {
-    // iterate over the entities of the group
-    for (let entity of this.group.entities) {
-      // get the Transform component of the entity
-      const transform = entity.get(Transform)
-
-      // mutate the rotation
-      transform.rotation.y += dt * 10
+    for (let button of buttons.entities) {
+      let transform = button.get(Transform)
+      let state = button.get(ButtonState)
+      if (state.pressed == true && state.fraction < 1){
+        transform.position.z = Scalar.Lerp(state.zUp, state.zDown, state.fraction)
+        state.fraction += 1/15
+      } 
+      else if (state.pressed == false && state.fraction > 0){
+        transform.position.z = Scalar.Lerp(state.zUp, state.zDown, state.fraction)
+        state.fraction -= 1/15
+      }
     }
   }
 }
 
-// Add a new instance of the system to the engine
-engine.addSystem(new RotatorSystem())
+engine.addSystem(new PushButton)
 
-/// --- Spawner function ---
 
-function spawnCube(x: number, y: number, z: number) {
-  // create the entity
-  const cube = new Entity()
+///////////////////////////
+// INITIAL ENTITIES
 
-  // set a transform to the entity
-  cube.set(new Transform({ position: new Vector3(x, y, z) }))
 
-  // set a shape to the entity
-  cube.set(new BoxShape())
+// Jukebox
+const jukebox = new Entity()
+jukebox.set(new GLTFShape("models/Jukebox.gltf"))
+jukebox.set(new Transform())
+jukebox.get(Transform).position.set(5, 0, 9.5)
+jukebox.get(Transform).rotation.set(0, 0, 0)
+jukebox.get(Transform).scale.setAll(0.6)
+engine.addEntity(jukebox)
 
-  // add the entity to the engine
-  engine.addEntity(cube)
+let buttonArray =  []
 
-  return cube
+for (let i = 0; i < songs.length; i ++){
+  let posX = i % 2 == 0 ? -.4 : .1;
+  let posY = Math.floor(i / 2) == 0 ? 1.9 : 1.77;
+
+  const buttonWrapper = new Entity()
+  buttonWrapper.set(new Transform())
+  buttonWrapper.get(Transform).position.set(posX, posY, -0.7)
+  buttonWrapper.parent = jukebox
+  engine.addEntity(buttonWrapper)
+
+  buttonArray[i] = new Entity()
+  buttonArray[i].set(new Transform())
+  buttonArray[i].get(Transform).position.set(0, 0, 0)
+  buttonArray[i].get(Transform).rotation.set(90, 0, 0)
+  buttonArray[i].get(Transform).scale.set(0.05, 0.2, 0.05)
+  buttonArray[i].parent = buttonWrapper
+  buttonArray[i].set(new CylinderShape())
+  buttonArray[i].set(new ButtonState(0, 0.1))
+  buttonArray[i].set(new OnClick( _ => {
+    let state = buttonArray[i].get(ButtonState)
+    state.pressed = !state.pressed
+    playSong(i)
+    for (let j = 0; j < songs.length; j ++){
+      if (j !== i){
+        buttonArray[j].get(ButtonState).pressed = false
+      }
+    }
+  }))
+
+  engine.addEntity(buttonArray[i])
+
+  // const label = new Entity()
+  // label.set(new Transform())
+  // label.get(Transform).position.set(0.26, 0, -0.1)
+  // label.parent = button
+  // label.set(new Text())   ??????
+  // engine.addEntity(label)
 }
 
-/// --- Spawn a cube ---
+///////////////////////////////////////
+//OTHER FUNCTIONS
 
-const cube = spawnCube(5, 1, 5)
+function playSong(index: number){
 
-cube.set(
-  new OnClick(() => {
-    cube.get(Transform).scale.z *= 1.1
-    cube.get(Transform).scale.x *= 0.9
-
-    spawnCube(Math.random() * 8 + 1, Math.random() * 8, Math.random() * 8 + 1)
+  executeTask(async () => {
+    try {
+      await playSound("a.mp3", {
+        loop: false,
+        volume: 100,
+      })
+    } catch {
+      log('failed to play sound')
+    }
   })
-)
+}
+
+executeTask(async () => {
+  try {
+    await playSound("a.mp3", {
+      loop: false,
+      volume: 100,
+    })
+  } catch {
+    log('failed to play sound')
+  }
+})
