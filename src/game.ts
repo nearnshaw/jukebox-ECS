@@ -3,10 +3,10 @@ import { playSound } from '@decentraland/SoundController'
 // Define song list
 const songs: {src: string, name: string}[] = 
 [
-  {src: "sounds/Concerto a' 4 Violini No 2 - Telemann.mp3", name: "Telemann"},
-  {src: "sounds/Double Violin Concerto 1st Movement - J.S. Bach.mp3", name: "Bach"},
-  {src: "sounds/Rhapsody No. 2 in G Minor – Brahms.mp3", name: "Brahms"},
-  {src: "sounds/Scherzo No1_ Chopin.mp3", name: "Chopin"},
+  {src: "sounds/Telemann.mp3", name: "Telemann"},
+  {src: "sounds/Bach.mp3", name: "Bach"},
+  {src: "sounds/Brahms.mp3", name: "Brahms"},
+  {src: "sounds/Chopin.mp3", name: "Chopin"},
 ];
 
 
@@ -103,20 +103,6 @@ for (let i = 0; i < songs.length; i ++){
 ///////////////////////////////////////
 //OTHER FUNCTIONS
 
-function playSong(index: number){
-
-  executeTask(async () => {
-    try {
-      await playSound("a.mp3", {
-        loop: false,
-        volume: 100,
-      })
-    } catch {
-      log('failed to play sound')
-    }
-  })
-}
-
 function pressButton(i:number){
   let state = buttonArray[i].get(ButtonState)
     state.pressed = !state.pressed
@@ -128,13 +114,17 @@ function pressButton(i:number){
     }
 }
 
-executeTask(async () => {
-  try {
-    await playSound("a.mp3", {
-      loop: false,
-      volume: 100,
-    })
-  } catch {
-    log('failed to play sound')
-  }
-})
+function playSong(i: number){
+  let songPath = songs[i].src
+  log(songPath)
+  executeTask(async () => {
+    try {
+      await playSound(songs[i].src.toString(), {
+        loop: true,
+        volume: 100,
+      })
+    } catch {
+      log('failed to play sound')
+    }
+  })
+}

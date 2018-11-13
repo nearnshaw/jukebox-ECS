@@ -59,14 +59,13 @@ var __values = (this && this.__values) || function (o) {
 };
 define("game", ["require", "exports", "@decentraland/SoundController"], function (require, exports, SoundController_1) {
     "use strict";
-    var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     // Define song list
     var songs = [
-        { src: "sounds/Concerto a' 4 Violini No 2 - Telemann.mp3", name: "Telemann" },
-        { src: "sounds/Double Violin Concerto 1st Movement - J.S. Bach.mp3", name: "Bach" },
-        { src: "sounds/Rhapsody No. 2 in G Minor – Brahms.mp3", name: "Brahms" },
-        { src: "sounds/Scherzo No1_ Chopin.mp3", name: "Chopin" },
+        { src: "sounds/Telemann.mp3", name: "Telemann" },
+        { src: "sounds/Bach.mp3", name: "Bach" },
+        { src: "sounds/Brahms.mp3", name: "Brahms" },
+        { src: "sounds/Chopin.mp3", name: "Chopin" },
     ];
     ////////////////////////
     // Custom components
@@ -166,16 +165,28 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
     }
     ///////////////////////////////////////
     //OTHER FUNCTIONS
-    function playSong(index) {
+    function pressButton(i) {
+        var state = buttonArray[i].get(ButtonState);
+        state.pressed = !state.pressed;
+        playSong(i);
+        for (var j = 0; j < songs.length; j++) {
+            if (j !== i) {
+                buttonArray[j].get(ButtonState).pressed = false;
+            }
+        }
+    }
+    function playSong(i) {
         var _this = this;
+        var songPath = songs[i].src;
+        log(songPath);
         executeTask(function () { return __awaiter(_this, void 0, void 0, function () {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, SoundController_1.playSound("a.mp3", {
-                                loop: false,
+                        return [4 /*yield*/, SoundController_1.playSound(songs[i].src.toString(), {
+                                loop: true,
                                 volume: 100,
                             })];
                     case 1:
@@ -190,35 +201,4 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
             });
         }); });
     }
-    function pressButton(i) {
-        var state = buttonArray[i].get(ButtonState);
-        state.pressed = !state.pressed;
-        playSong(i);
-        for (var j = 0; j < songs.length; j++) {
-            if (j !== i) {
-                buttonArray[j].get(ButtonState).pressed = false;
-            }
-        }
-    }
-    executeTask(function () { return __awaiter(_this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _b.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, SoundController_1.playSound("a.mp3", {
-                            loop: false,
-                            volume: 100,
-                        })];
-                case 1:
-                    _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = _b.sent();
-                    log('failed to play sound');
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); });
 });
