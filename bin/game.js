@@ -185,7 +185,7 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, SoundController_1.playSound(songs[i].src.toString(), {
+                        return [4 /*yield*/, SoundController_1.playSound(songs[i].src, {
                                 loop: true,
                                 volume: 100,
                             })];

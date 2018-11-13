@@ -119,7 +119,7 @@ function playSong(i: number){
   log(songPath)
   executeTask(async () => {
     try {
-      await playSound(songs[i].src.toString(), {
+      await playSound(songs[i].src, {
         loop: true,
         volume: 100,
       })
