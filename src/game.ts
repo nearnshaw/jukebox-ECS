@@ -88,11 +88,12 @@ for (let i = 0; i < songs.length; i ++){
   const buttonLabel = new Entity()
   buttonLabel.set(new Transform())
   buttonLabel.get(Transform).position.set(0.6, 0, -0.1)
-  buttonLabel.set(new TextShape(songs[i].name))
-  buttonLabel.get(TextShape).fontSize = 35
-  buttonLabel.get(TextShape).fontFamily = "serif"
-  buttonLabel.get(TextShape).hAlign = "left"  
-  buttonLabel.get(TextShape).color = "#800000"  
+  const text = new TextShape(songs[i].name)
+  text.fontSize = 35
+  text.fontFamily = "serif"
+  text.hAlign = "left"  
+  text.color = "#800000" 
+  buttonLabel.set(text) 
   buttonLabel.parent = buttonWrapper
   engine.addEntity(buttonLabel)
 
