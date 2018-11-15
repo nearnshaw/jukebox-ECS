@@ -40,11 +40,11 @@ export class PushButton implements ISystem {
       let state = button.get(ButtonState)
       if (state.pressed == true && state.fraction < 1){
         transform.position.z = Scalar.Lerp(state.zUp, state.zDown, state.fraction)
-        state.fraction += 1/15
+        state.fraction += 1/8
       } 
       else if (state.pressed == false && state.fraction > 0){
         transform.position.z = Scalar.Lerp(state.zUp, state.zDown, state.fraction)
-        state.fraction -= 1/15
+        state.fraction -= 1/8
       }
     }
   }
@@ -66,6 +66,13 @@ jukebox.get(Transform).rotation.setEuler(0, 0, 0)
 jukebox.get(Transform).scale.setAll(0.6)
 engine.addEntity(jukebox)
 
+
+// Material for buttons
+const buttonMaterial = new Material()
+buttonMaterial.albedoColor = "#cc0000" 
+
+
+// Buttons
 let buttonArray =  []
 
 for (let i = 0; i < songs.length; i ++){
@@ -78,13 +85,25 @@ for (let i = 0; i < songs.length; i ++){
   buttonWrapper.parent = jukebox
   engine.addEntity(buttonWrapper)
 
+  const buttonLabel = new Entity()
+  buttonLabel.set(new Transform())
+  buttonLabel.get(Transform).position.set(0.6, 0, -0.1)
+  buttonLabel.set(new TextShape(songs[i].name))
+  buttonLabel.get(TextShape).fontSize = 35
+  buttonLabel.get(TextShape).fontFamily = "serif"
+  buttonLabel.get(TextShape).hAlign = "left"  
+  buttonLabel.get(TextShape).color = "#800000"  
+  buttonLabel.parent = buttonWrapper
+  engine.addEntity(buttonLabel)
+
   buttonArray[i] = new Entity()
   buttonArray[i].set(new Transform())
   buttonArray[i].get(Transform).position.set(0, 0, 0)
   buttonArray[i].get(Transform).rotation.setEuler(90, 0, 0)
   buttonArray[i].get(Transform).scale.set(0.05, 0.2, 0.05)
+  buttonArray[i].set(buttonMaterial)
   buttonArray[i].parent = buttonWrapper
-  buttonArray[i].set(new CylinderShape())
+  buttonArray[i].set(new CylinderShape()) 
   buttonArray[i].set(new ButtonState(0, 0.1))
   buttonArray[i].set(new OnClick( _ => {
     pressButton(i)
@@ -106,7 +125,9 @@ for (let i = 0; i < songs.length; i ++){
 function pressButton(i:number){
   let state = buttonArray[i].get(ButtonState)
     state.pressed = !state.pressed
-    playSong(i)
+    if (state.pressed){
+      playSong(i)
+    }
     for (let j = 0; j < songs.length; j ++){
       if (j !== i){
         buttonArray[j].get(ButtonState).pressed = false
