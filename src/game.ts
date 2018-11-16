@@ -92,7 +92,7 @@ for (let i = 0; i < songs.length; i ++){
   text.fontSize = 35
   text.fontFamily = "serif"
   text.hAlign = "left"  
-  text.color = "#800000" 
+  text.color = "#800000"
   buttonLabel.set(text) 
   buttonLabel.parent = buttonWrapper
   engine.addEntity(buttonLabel)
