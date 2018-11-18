@@ -82,7 +82,7 @@ for (let i = 0; i < songs.length; i ++){
   const buttonWrapper = new Entity()
   buttonWrapper.set(new Transform())
   buttonWrapper.get(Transform).position.set(posX, posY, -0.7)
-  buttonWrapper.parent = jukebox
+  buttonWrapper.setParent(jukebox)
   engine.addEntity(buttonWrapper)
 
   const buttonLabel = new Entity()
@@ -94,7 +94,7 @@ for (let i = 0; i < songs.length; i ++){
   text.hAlign = "left"  
   text.color = "#800000"
   buttonLabel.set(text) 
-  buttonLabel.parent = buttonWrapper
+  buttonLabel.setParent(buttonWrapper)
   engine.addEntity(buttonLabel)
 
   buttonArray[i] = new Entity()
@@ -103,7 +103,7 @@ for (let i = 0; i < songs.length; i ++){
   buttonArray[i].get(Transform).rotation.setEuler(90, 0, 0)
   buttonArray[i].get(Transform).scale.set(0.05, 0.2, 0.05)
   buttonArray[i].set(buttonMaterial)
-  buttonArray[i].parent = buttonWrapper
+  buttonArray[i].setParent(buttonWrapper)
   buttonArray[i].set(new CylinderShape()) 
   buttonArray[i].set(new ButtonState(0, 0.1))
   buttonArray[i].set(new OnClick( _ => {
@@ -111,13 +111,6 @@ for (let i = 0; i < songs.length; i ++){
   }))
 
   engine.addEntity(buttonArray[i])
-
-  // const label = new Entity()
-  // label.set(new Transform())
-  // label.get(Transform).position.set(0.26, 0, -0.1)
-  // label.parent = button
-  // label.set(new Text())   ??????
-  // engine.addEntity(label)
 }
 
 ///////////////////////////////////////
