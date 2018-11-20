@@ -69,7 +69,7 @@ engine.addEntity(jukebox)
 
 // Material for buttons
 const buttonMaterial = new Material()
-buttonMaterial.albedoColor = "#cc0000" 
+buttonMaterial.albedoColor = Color3.FromHexString("#cc0000")
 
 
 // Buttons
@@ -92,7 +92,7 @@ for (let i = 0; i < songs.length; i ++){
   text.fontSize = 35
   text.fontFamily = "serif"
   text.hAlign = "left"  
-  text.color = "#800000"
+  text.color = Color3.FromHexString("#800000")
   buttonLabel.set(text) 
   buttonLabel.setParent(buttonWrapper)
   engine.addEntity(buttonLabel)
