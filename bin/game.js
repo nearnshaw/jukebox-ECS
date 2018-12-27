@@ -93,7 +93,7 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
     var PushButton = /** @class */ (function () {
         function PushButton() {
         }
-        PushButton.prototype.update = function (dt) {
+        PushButton.prototype.update = function () {
             var e_1, _a;
             try {
                 for (var _b = __values(buttons.entities), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -127,10 +127,11 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
     // Jukebox
     var jukebox = new Entity();
     jukebox.set(new GLTFShape("models/Jukebox.gltf"));
-    jukebox.set(new Transform());
-    jukebox.get(Transform).position.set(5, 0, 9.5);
-    jukebox.get(Transform).rotation.setEuler(0, 0, 0);
-    jukebox.get(Transform).scale.setAll(0.6);
+    jukebox.set(new Transform({
+        position: new Vector3(5, 0, 9.5),
+        rotation: Quaternion.Euler(0, 0, 0),
+        scale: new Vector3(0.6, 0.6, 0.6)
+    }));
     engine.addEntity(jukebox);
     // Material for buttons
     var buttonMaterial = new Material();
@@ -140,14 +141,17 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
     var _loop_1 = function (i) {
         var posX = i % 2 == 0 ? -.4 : .1;
         var posY = Math.floor(i / 2) == 0 ? 1.9 : 1.77;
+        // groups the button itself and label
         var buttonWrapper = new Entity();
-        buttonWrapper.set(new Transform());
-        buttonWrapper.get(Transform).position.set(posX, posY, -0.7);
+        buttonWrapper.set(new Transform({
+            position: new Vector3(posX, posY, -0.7)
+        }));
         buttonWrapper.setParent(jukebox);
         engine.addEntity(buttonWrapper);
         var buttonLabel = new Entity();
-        buttonLabel.set(new Transform());
-        buttonLabel.get(Transform).position.set(0.6, 0, -0.1);
+        buttonLabel.set(new Transform({
+            position: new Vector3(0.6, 0, -0.1)
+        }));
         var text = new TextShape(songs[i].name);
         text.fontSize = 35;
         text.fontFamily = "serif";
@@ -157,15 +161,16 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
         buttonLabel.setParent(buttonWrapper);
         engine.addEntity(buttonLabel);
         buttonArray[i] = new Entity();
-        buttonArray[i].set(new Transform());
-        buttonArray[i].get(Transform).position.set(0, 0, 0);
-        buttonArray[i].get(Transform).rotation.setEuler(90, 0, 0);
-        buttonArray[i].get(Transform).scale.set(0.05, 0.2, 0.05);
+        buttonArray[i].set(new Transform({
+            position: new Vector3(0, 0, 0),
+            rotation: Quaternion.Euler(90, 0, 0),
+            scale: new Vector3(0.05, 0.2, 0.05)
+        }));
         buttonArray[i].set(buttonMaterial);
         buttonArray[i].setParent(buttonWrapper);
         buttonArray[i].set(new CylinderShape());
         buttonArray[i].set(new ButtonState(0, 0.1));
-        buttonArray[i].set(new OnClick(function (_) {
+        buttonArray[i].set(new OnClick(function (e) {
             pressButton(i);
         }));
         engine.addEntity(buttonArray[i]);
@@ -213,5 +218,4 @@ define("game", ["require", "exports", "@decentraland/SoundController"], function
             });
         }); });
     }
-    engine.removeEntity(jukebox);
 });
